@@ -1,6 +1,7 @@
 import numpy as np
 import torchvision.transforms as T
 from imgaug import augmenters as iaa
+from torchvision.transforms import ToTensor
 
 
 class ImgAugTransform:
@@ -23,7 +24,8 @@ class ImgAugTransform:
             iaa.Sometimes(0.8,
                           iaa.Affine(
                               scale={"x": (0.8, 1.2), "y": (0.8, 1.2)},
-                              translate_percent={"x": (-0.2, 0.2), "y": (-0.2, 0.2)},
+                              translate_percent={
+                                  "x": (-0.2, 0.2), "y": (-0.2, 0.2)},
                               rotate=(-25, 25),
                               shear=(-8, 8)
                           )),
@@ -34,6 +36,14 @@ class ImgAugTransform:
         img = np.array(img)
         img = self.aug.augment_image(img)
         return img
+
+
+class ImgBBoxsTr():
+    def __init__(self):
+        self.to_tensor = ToTensor()
+
+    def __call__(self, x, bboxs):
+        return self.to_tensor(x), torch.Tensor(bboxs).long()
 
 
 val_transform = T.Compose([T.Resize((224, 224)),
