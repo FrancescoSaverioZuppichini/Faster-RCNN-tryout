@@ -21,7 +21,7 @@ class YoloAnnotationsParser:
                 labels.append(label)
                 bboxs.append(bbox)
 
-        return labels, bboxs
+        return  torch.Tensor(labels).long(), torch.Tensor(bboxs).float()
 
 
 class DetectionDataset(Dataset):
@@ -37,8 +37,10 @@ class DetectionDataset(Dataset):
 
         if self.transform is not None:
             img, boxes = self.transform(img, boxes)
-        labels = torch.Tensor(labels).long()
+
         target = dict(boxes=boxes, labels=labels)
         return img, target
-
+    
+    def __len__(self):
+        return len(self.images_paths)
 
