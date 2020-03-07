@@ -11,4 +11,8 @@ annotations_paths = out_dir.glob('*.txt')
 ids = [p.name.split('.')[0] for p in annotations_paths]
 
 for i in ids:
-    shutil.copy(f'{in_dir}/{i}.{EXT}', f'{out_dir}/{i}.{EXT}')
+    try:
+        print(f'[COPY] {i}.{EXT}')
+        shutil.copy(f'{in_dir}/{i}.{EXT}', f'{out_dir}/{i}.{EXT}')
+    except FileNotFoundError as e:
+        print(f'[WARNING] not found {i}.{EXT}')
